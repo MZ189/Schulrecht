@@ -1,0 +1,704 @@
+<title>Schulrecht Bayern</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Layout: one reading column, header on top, thread in the middle, composer pinned to the bottom edge. */
+:root {
+  --bg: #F3F6F9;
+  --surface: #FFFFFF;
+  --fg: #13202C;
+  --muted: #55677A;
+  --line: #D3DCE5;
+  --accent: #0B5CA8;
+  --accent-soft: #E1EDF8;
+  --on-accent: #FFFFFF;
+  --user-bg: #0B5CA8;
+  --warn-bg: #FFF4D6;
+  --warn-fg: #5C4300;
+  --font-display: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1620;
+    --surface: #16212D;
+    --fg: #E5ECF3;
+    --muted: #93A4B5;
+    --line: #28394A;
+    --accent: #66B0EC;
+    --accent-soft: #1A2C3F;
+    --on-accent: #FFFFFF;
+    --user-bg: #1F5F99;
+    --warn-bg: #3A2F10;
+    --warn-fg: #F2D98A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1620;
+  --surface: #16212D;
+  --fg: #E5ECF3;
+  --muted: #93A4B5;
+  --line: #28394A;
+  --accent: #66B0EC;
+  --accent-soft: #1A2C3F;
+  --on-accent: #FFFFFF;
+  --user-bg: #1F5F99;
+  --warn-bg: #3A2F10;
+  --warn-fg: #F2D98A;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+.wrap { max-width: 760px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+
+header { padding-block: 28px 18px; display: flex; flex-direction: column; gap: 10px; }
+.law-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.law-tags span {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em;
+  padding: 2px 8px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); background: var(--surface);
+}
+.law-tags span.core { color: var(--accent); border-color: var(--accent); }
+h1 {
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(28px, 6vw, 38px);
+  line-height: 1.12; margin: 0; letter-spacing: -.01em; text-wrap: balance;
+}
+.lede { margin: 0; color: var(--muted); max-width: 60ch; }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.scope { font-size: 14px; color: var(--muted); }
+#loadstate { font-size: 14px; color: var(--muted); font-family: var(--font-mono); }
+button, textarea { font: inherit; color: inherit; }
+.linkbtn {
+  margin-left: auto; background: none; border: 0; color: var(--accent); cursor: pointer; padding: 6px 4px; font-size: 14px; text-decoration: underline; text-underline-offset: 3px;
+}
+
+#thread { flex: 1; display: flex; flex-direction: column; gap: 18px; padding-block: 20px; min-width: 0; }
+
+.intro { display: flex; flex-direction: column; gap: 14px; }
+.intro h2 { font-family: var(--font-display); font-size: 20px; margin: 0; font-weight: 600; }
+.intro .hint { margin: 0; color: var(--muted); }
+.examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; }
+.examples button {
+  text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 10px 12px; cursor: pointer; line-height: 1.4; min-width: 0;
+}
+.examples button:hover { border-color: var(--accent); background: var(--accent-soft); }
+.notice {
+  background: var(--warn-bg); color: var(--warn-fg); border-radius: 8px; padding: 10px 12px; font-size: 14px; margin: 0;
+}
+details.sources { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 14px; }
+details.sources summary { cursor: pointer; color: var(--accent); }
+details.sources dl { margin: 10px 0 2px; display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; }
+details.sources dt { font-family: var(--font-mono); font-size: 13px; }
+details.sources dd { margin: 0; color: var(--muted); min-width: 0; overflow-wrap: anywhere; }
+
+.msg { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.msg .who { font-family: var(--font-mono); font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.msg.user { align-items: flex-end; }
+.msg.user .body { background: var(--user-bg); color: var(--on-accent); border-radius: 14px 14px 4px 14px; padding: 10px 14px; max-width: 88%; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg.bot .body {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 4px 14px 14px 14px; padding: 12px 16px; overflow-wrap: anywhere; min-width: 0;
+}
+.body p { margin: 0 0 .7em; }
+.body p:last-child, .body ul:last-child, .body ol:last-child { margin-bottom: 0; }
+.body h4 { font-family: var(--font-display); font-size: 16px; margin: .9em 0 .3em; }
+.body ul, .body ol { margin: 0 0 .7em; padding-left: 1.3em; }
+.body li { margin-bottom: .25em; }
+.cite {
+  font-family: var(--font-mono); font-size: .86em; background: var(--accent-soft); color: var(--accent);
+  padding: 1px 5px; border-radius: 4px; white-space: nowrap;
+}
+.typing { color: var(--muted); font-style: italic; }
+.status { font-size: 13px; color: var(--muted); font-family: var(--font-mono); overflow-wrap: anywhere; }
+.consulted { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.msg-actions { display: flex; gap: 12px; }
+.msg-actions button { background: none; border: 0; color: var(--muted); font-size: 13px; cursor: pointer; padding: 2px 0; text-decoration: underline; text-underline-offset: 3px; }
+.err { color: var(--warn-fg); background: var(--warn-bg); border-radius: 8px; padding: 8px 12px; font-size: 14px; }
+
+.composer-bar {
+  position: sticky; bottom: 0; background: var(--bg); padding-block: 12px;
+  border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.composer { display: flex; gap: 8px; align-items: flex-end; }
+textarea {
+  flex: 1; min-width: 0; resize: none; background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; min-height: 46px; max-height: 180px; line-height: 1.4;
+}
+#send {
+  background: var(--accent); color: var(--on-accent); border: 0; border-radius: 10px; padding: 0 18px; min-height: 46px; font-weight: 600; cursor: pointer;
+}
+#send.stop { background: var(--muted); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.fine { margin: 0; font-size: 12.5px; color: var(--muted); }
+.fine a { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+@media (max-width: 480px) { .msg.user .body { max-width: 96%; } .linkbtn { margin-left: 0; } details.sources dl { grid-template-columns: 1fr; gap: 0; } details.sources dd { margin-bottom: 8px; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="law-tags" aria-label="Wissensgrundlagen">
+      <span class="core">BayEUG</span><span class="core">BaySchO</span><span class="core">GSO</span><span class="core">LDO</span><span class="core">Hausordnung</span>
+      <span>BayDSG</span><span>DSGVO</span><span>BeamtStG</span><span>BayBG</span><span>BayDG</span><span>UrlMV</span><span>GG</span><span>KunstUrhG</span>
+    </div>
+    <h1>Schulrecht Bayern</h1>
+    <p class="lede">Rechtliche Einschätzung für Lehrkräfte. Schildern Sie den Fall aus Ihrem Schulalltag und erhalten Sie Rechtsgrundlage, Bewertung und konkrete nächste Schritte, nachgeschlagen im Wortlaut der Gesetze.</p>
+  </header>
+
+  <div class="toolbar">
+    <span class="scope">Nur für die schulinterne Nutzung</span>
+    <span id="loadstate">Gesetzestexte werden geladen …</span>
+    <button type="button" class="linkbtn" id="reset">Neuer Fall</button>
+  </div>
+
+  <main id="thread" role="log" aria-live="polite" aria-label="Unterhaltung">
+    <section class="intro" id="intro">
+      <h2>Welchen Fall möchten Sie klären?</h2>
+      <p class="hint">Hilfreich sind Schulart und Jahrgangsstufe, was vorgefallen ist, was bereits unternommen wurde und was Sie erreichen möchten.</p>
+      <div class="examples" id="examples"></div>
+      <details class="sources" id="sources" hidden>
+        <summary id="sources-sum">Wissensgrundlagen</summary>
+        <dl id="sources-list"></dl>
+      </details>
+      <p class="notice">Bitte keine Namen von Schülerinnen und Schülern oder Eltern eingeben. Der Assistent schlägt in den hinterlegten Gesetzestexten und in der Hausordnung nach und nennt die Fundstellen. Die Einschätzung ist eine Orientierung und keine verbindliche Rechtsauskunft. Schreiben des Ministeriums, der Lehrplan und weitere schulinterne Dokumente liegen nicht vor. Ist ein Fall nicht eindeutig zu lösen, verweist der Assistent an den Schulleiter, Herrn Matthias Zeidler.</p>
+    </section>
+  </main>
+
+  <div class="composer-bar">
+    <form class="composer" id="form">
+      <textarea id="input" rows="1" placeholder="Fall schildern …" aria-label="Fallschilderung"></textarea>
+      <button type="submit" id="send">Senden</button>
+    </form>
+    <p class="fine">Originaltexte:
+      <a href="https://www.gesetze-bayern.de/Content/Document/BayEUG" target="_blank" rel="noopener noreferrer">BayEUG</a>,
+      <a href="https://www.gesetze-bayern.de/Content/Document/BaySchO2016" target="_blank" rel="noopener noreferrer">BaySchO</a>,
+      <a href="https://www.gesetze-bayern.de/Content/Document/BayGSO" target="_blank" rel="noopener noreferrer">GSO</a>
+    </p>
+  </div>
+</div>
+
+<script>
+(function () {
+  var EXAMPLES = [
+    "Ein Schüler der 8. Klasse fehlt seit drei Tagen ohne Entschuldigung. Welche Schritte muss ich einleiten?",
+    "Ich möchte einer Schülerin wegen wiederholter Unterrichtsstörung einen Verweis erteilen. Wie gehe ich vor?",
+    "Ein Schüler hat bei einer Schulaufgabe getäuscht. Welche Folgen sind zulässig?",
+    "Eltern verlangen Einsicht in die korrigierte Schulaufgabe ihres Kindes. Was gilt?",
+    "Ein Schüler nutzt im Unterricht trotz Aufforderung sein Handy. Was darf ich anordnen und was sagt die Hausordnung?",
+    "Darf ich Fotos von der Klassenfahrt auf der Schulhomepage veröffentlichen? Welche Einwilligungen brauche ich?"
+  ];
+
+  /* ==LOGIC-START== Suche und Nachschlagen in den Gesetzestexten (wird auch im Test geladen) */
+  var C = null;
+  var LAWIDS = [];
+  var SCHOOL = { BayEUG: 1, BaySchO: 1, GSO: 1, Hausordnung: 1, LDO: 1 };
+  var ALIAS = { bayeug: "BayEUG", bayscho: "BaySchO", schulordnung: "BaySchO", gso: "GSO", baygso: "GSO",
+    gymnasialschulordnung: "GSO", baybg: "BayBG", beamtengesetz: "BayBG", baydg: "BayDG", disziplinargesetz: "BayDG",
+    urlmv: "UrlMV", bayurlmv: "UrlMV", gg: "GG", grundgesetz: "GG", kunsturhg: "KunstUrhG", kunsturhebergesetz: "KunstUrhG",
+    baydsg: "BayDSG", datenschutzgesetz: "BayDSG", dsgvo: "DSGVO", datenschutzgrundverordnung: "DSGVO", hausordnung: "Hausordnung", ldo: "LDO", lehrerdienstordnung: "LDO", dienstordnung: "LDO", beamtstg: "BeamtStG", beamtenstatusgesetz: "BeamtStG" };
+  var STOP = {};
+  ("der die das den dem des ein eine einen einem einer eines und oder aber auch nicht kein keine ist sind war wird werden wurde " +
+   "kann darf dürfen muss müssen soll sollen im in am an auf aus bei mit nach von vor zu zum zur über unter für als wie was wer " +
+   "wo wenn dass ob es sie er ich wir ihr sich man mein dein hier dort schon noch nur sehr mehr gilt gelten welche welcher " +
+   "welches wann warum muss ihre ihrer").split(" ").forEach(function (w) { STOP[w] = 1; });
+
+  function setCorpus(c) {
+    C = c;
+    LAWIDS = c.laws.map(function (l) { return l.id; });
+    c.norms.forEach(function (n) {
+      n.lc = (n.title + " " + n.text).toLowerCase();
+      n.tlc = n.title.toLowerCase();
+      n.flow = n.kind === "anlage" ? n.text
+        : n.text.replace(/\n(?!\(\d+[a-z]?\)|\d+[.)]\s|[a-z]\)\s|[–-]\s|\n)/g, " ");
+    });
+  }
+  function lawMeta(id) { for (var i = 0; i < C.laws.length; i++) if (C.laws[i].id === id) return C.laws[i]; return null; }
+  function resolveLaw(x) {
+    if (!x) return null;
+    var k = String(x).toLowerCase().replace(/[\s.\-_]/g, "");
+    for (var i = 0; i < LAWIDS.length; i++) if (LAWIDS[i].toLowerCase() === k) return LAWIDS[i];
+    var a = ALIAS[k]; if (a) return a;
+    throw new Error("Unbekanntes Gesetz „" + x + "“. Verfügbar: " + LAWIDS.join(", ") + ".");
+  }
+  function stemOf(w) {
+    var sufs = ["ungen", "ung", "keit", "heit", "chen", "ern", "en", "er", "es", "e", "n", "s"];
+    for (var i = 0; i < sufs.length; i++) {
+      if (w.length - sufs[i].length >= 4 && w.slice(-sufs[i].length) === sufs[i]) return w.slice(0, -sufs[i].length);
+    }
+    return w;
+  }
+  function termsOf(q) {
+    var out = [];
+    String(q || "").toLowerCase().split(/[^a-zäöüß0-9]+/).forEach(function (w) {
+      if (w.length < 3 || STOP[w]) return;
+      var s = stemOf(w);
+      if (out.indexOf(s) < 0) out.push(s);
+    });
+    return out.slice(0, 12);
+  }
+  function searchNorms(q, law, limit) {
+    var ts = termsOf(q);
+    if (!ts.length) throw new Error("Bitte mindestens ein Suchwort mit drei oder mehr Buchstaben angeben.");
+    var pool = C.norms.filter(function (n) { return !n.aufgehoben && n.text.length > 25 && (!law || n.law === law); });
+    var N = pool.length;
+    var df = ts.map(function (t) { var c = 0; pool.forEach(function (n) { if (n.lc.indexOf(t) >= 0) c++; }); return c; });
+    var scored = [];
+    pool.forEach(function (n) {
+      var s = 0, hits = 0, first = -1;
+      ts.forEach(function (t, i) {
+        if (!df[i]) return;
+        var p = n.lc.indexOf(t), cnt = 0;
+        if (p >= 0) {
+          hits++;
+          if (first < 0 || p < first) first = p;
+          while (p >= 0 && cnt < 6) { cnt++; p = n.lc.indexOf(t, p + t.length); }
+        }
+        s += Math.log(1 + N / df[i]) * (cnt + (n.tlc.indexOf(t) >= 0 ? 4 : 0));
+      });
+      if (!hits) return;
+      s *= 1 + hits / ts.length;
+      s /= Math.pow(n.text.length / 1500 + 1, 0.35);
+      if (!law && SCHOOL[n.law]) s *= 1.2;
+      if (n.kind === "anlage") s *= 0.6;
+      if (n.kind === "erwg") s *= 0.5;
+      scored.push({ n: n, s: s, first: first });
+    });
+    scored.sort(function (a, b) { return b.s - a.s; });
+    return scored.slice(0, limit || 8).map(function (r) {
+      var full = r.n.title + " " + r.n.text;
+      var from = Math.max(0, r.first - 70);
+      return {
+        gesetz: r.n.law, fundstelle: r.n.ref, titel: r.n.title || (r.n.kind === "erwg" ? "Erwägungsgrund" : ""), laenge: r.n.text.length,
+        treffer: (from > 0 ? "…" : "") + full.slice(from, r.first + 170).replace(/\s+/g, " ").trim() + "…"
+      };
+    });
+  }
+  function findNorm(law, ref) {
+    var s = String(ref || "").toLowerCase().trim(), m, i, n;
+    if (law === "Hausordnung") {
+      var key = /pr[äa]e?ambel/.test(s) ? "präambel" : ((m = s.match(/(\d+(?:\.\d+)?)/)) ? "nr. " + m[1] : "");
+      for (i = 0; i < C.norms.length; i++) {
+        n = C.norms[i];
+        if (n.law === law && n.ref.toLowerCase() === key) return n;
+      }
+      return null;
+    }
+    if (/^erw/.test(s)) {
+      m = s.match(/(\d+)/);
+      if (m) for (i = 0; i < C.norms.length; i++) {
+        n = C.norms[i];
+        if (n.law === law && n.kind === "erwg" && n.num === parseInt(m[1], 10)) return n;
+      }
+      return null;
+    }
+    if (/^anlage/.test(s)) {
+      m = s.match(/anlage\s*(\d+[a-z]?)/);
+      if (m) for (i = 0; i < C.norms.length; i++) {
+        n = C.norms[i];
+        if (n.law === law && n.kind === "anlage" && (n.ref.toLowerCase() + " ").indexOf("anlage " + m[1] + " ") === 0) return n;
+      }
+      return null;
+    }
+    m = s.match(/(\d+)\s?([a-z])?(?![a-zäöüß])/);
+    if (!m) return null;
+    var num = parseInt(m[1], 10), suf = m[2] || "";
+    for (i = 0; i < C.norms.length; i++) {
+      n = C.norms[i];
+      if (n.law === law && n.kind === "norm" && n.num === num && (n.suf || "") === suf) return n;
+    }
+    return null;
+  }
+  var CHUNK = 20000;
+  function readNorm(law, ref, ab) {
+    var n = findNorm(law, ref);
+    if (!n) {
+      var refs = C.norms.filter(function (x) { return x.law === law && x.kind === "norm"; });
+      var hint;
+      if (law === "Hausordnung") hint = "Vorhanden: " + refs.map(function (x) { return x.ref; }).join(", ") + ".";
+      else {
+        var nums = refs.map(function (x) { return x.num; });
+        hint = "Vorhandene Nummern: " + Math.min.apply(null, nums) + " bis " + Math.max.apply(null, nums) +
+          ". Anlagen als „Anlage 1“ angeben" + (law === "DSGVO" ? ", Erwägungsgründe als „ErwG 47“ (1 bis 173)" : "") + ".";
+      }
+      throw new Error("Keine Norm „" + ref + "“ in " + law + " gefunden. " + hint + " Mit suche_normen die Fundstelle ermitteln.");
+    }
+    var start = Math.max(0, parseInt(ab, 10) || 0);
+    var body = n.flow.slice(start, start + CHUNK);
+    var meta = lawMeta(law);
+    var out = {
+      gesetz: law, fundstelle: n.ref, titel: n.title, gliederung: n.ctx, rechtsstand: meta ? meta.stand : "",
+      aufgehoben: !!n.aufgehoben, text: body
+    };
+    if (start + CHUNK < n.flow.length) {
+      out.hinweis = "Text gekürzt: " + n.flow.length + " Zeichen insgesamt. Mit norm_lesen und ab=" + (start + CHUNK) + " weiterlesen.";
+    }
+    return out;
+  }
+  /* ==LOGIC-END== */
+
+  var corpusReady = fetch("corpus.json").then(function (r) {
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return r.json();
+  }).then(function (c) {
+    setCorpus(c);
+    renderSources();
+    return c;
+  }).catch(function () {
+    document.getElementById("loadstate").textContent = "Gesetzestexte nicht geladen";
+    return null;
+  });
+
+  function renderSources() {
+    var cnt = C.norms.length;
+    document.getElementById("loadstate").textContent = C.laws.length + " Gesetze, " + cnt + " Abschnitte geladen";
+    var list = document.getElementById("sources-list");
+    C.laws.forEach(function (l) {
+      var dt = document.createElement("dt"); dt.textContent = l.id;
+      var dd = document.createElement("dd"); dd.textContent = l.name + ". Stand: " + l.stand + ".";
+      list.appendChild(dt); list.appendChild(dd);
+    });
+    document.getElementById("sources-sum").textContent = "Wissensgrundlagen (" + C.laws.length + " Gesetze im Volltext)";
+    document.getElementById("sources").hidden = false;
+  }
+
+  function instructions() {
+    var today = new Date().toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" });
+    var lawLines = C.laws.map(function (l) {
+      var cnt = C.norms.filter(function (n) { return n.law === l.id; }).length;
+      return "• " + l.id + ": " + l.name + " (" + cnt + " Abschnitte). Stand der hinterlegten Fassung: " + l.stand + ".";
+    }).join("\n");
+    return [
+      "Du bist die rechtliche Anlaufstelle „Schulrecht Bayern“ eines bayerischen Gymnasiums. Du arbeitest wie eine erfahrene Schulleitung: sachkundig, ruhig, wertschätzend. Du hilfst Lehrkräften, rechtliche Probleme aus dem Schulalltag zu lösen. Dein Ton ist stets freundlich und sachlich, du sprichst die Lehrkraft mit „Sie“ an, ohne Floskeln und ohne zu belehren. Du bist nicht der Schulleiter selbst und gibst dich nicht als Person aus.",
+      "",
+      "GESETZESTEXTE",
+      "Dir liegen die Volltexte folgender Gesetze vor. Du erreichst sie über die Werkzeuge suche_normen (Stichwortsuche) und norm_lesen (Wortlaut einer Norm).",
+      lawLines,
+      "Kern deiner Arbeit sind BayEUG, BaySchO und GSO (die GSO gilt nur für Gymnasien, Abendgymnasien und Kollegs; gehe vom Gymnasium aus, sofern die Schilderung keine andere Schulart nennt). Die LDO (Lehrerdienstordnung) ist eine Bekanntmachung des Kultusministeriums und regelt die Dienstpflichten der Lehrkräfte, etwa Aufsichtspflicht (\u00A7 5 LDO), Dienstweg, Nebentätigkeit, Verschwiegenheit und besondere Vorkommnisse; sie ist eine Verwaltungsvorschrift und steht im Rang unter Gesetzen und Schulordnungen. BeamtStG (Bundesgesetz), BayBG, BayDG und UrlMV ergänzen das Dienstrecht der Lehrkräfte (Beamte), GG die Grundrechte, KunstUrhG das Recht am eigenen Bild (§§ 22 ff.). DSGVO (EU-Recht, gilt unmittelbar) und BayDSG regeln den Datenschutz; die schulspezifischen Regeln stehen vor allem in Art. 85 BayEUG und § 46 BaySchO mit Anlagen.",
+      "Die Hausordnung ist die Regelung der Schulleitung dieser Schule (§ 2 Abs. 2 Nr. 2 BaySchO), kein Gesetz. Sie steht im Rang unter allen genannten Gesetzen und Schulordnungen. Prüfe bei Fragen zum Schulalltag (digitale Endgeräte, Pausen, Aufenthalt, Ordnung, Sicherheit, Fotos) immer auch die Hausordnung und weise darauf hin, wenn sie von höherrangigem Recht abweicht oder darüber hinausgeht. Zitiere sie als „Nr. 5.1 Hausordnung“.",
+      "NICHT vorliegen: weitere Bekanntmachungen und Schreiben des Kultusministeriums (außer der LDO), Lehrplan, weitere Dokumente und Beschlüsse der Schule (zum Beispiel Bibliotheksordnung und die Regelungen zu Smartphone und Tablets, auf die die Hausordnung verweist), Tarifrecht, Schulordnungen anderer Schularten, weitere Datenschutzvorschriften (zum Beispiel BDSG). Dort kann es weitere Regelungen geben. Behaupte keinen Inhalt dieser Quellen, weise nur darauf hin, dass sie zu prüfen sind.",
+      "",
+      "ARBEITSWEISE",
+      "1. Fehlt für die Bewertung eine entscheidende Tatsache (Jahrgangsstufe, Zeitpunkt, bisherige Maßnahmen, Schulart), stelle bis zu zwei gezielte Rückfragen, ohne Werkzeuge zu nutzen.",
+      "2. Sonst recherchiere zuerst, bevor du antwortest. Rufe suche_normen mit mehreren Stichwortgruppen gleichzeitig auf, auch mit Synonymen und den Begriffen der Gesetzessprache (zum Beispiel Handy: digitale Endgeräte; Täuschung bei Prüfungen: Unterschleif, Hilfsmittel; Fehlen: Entschuldigung, Versäumnis, Beurlaubung). Lies danach die einschlägigen Normen mit norm_lesen, mehrere gleichzeitig. Plane höchstens zwei Suchrunden und etwa acht gelesene Normen ein. Schreibe vor und während der Recherche keinen Text, erst die fertige Antwort.",
+      "3. Stütze jede Aussage zur Rechtslage auf Normen, die du in dieser Antwort gelesen hast. Nenne Fundstellen mit Absatz und Satz, in der Form „Art. 86 Abs. 2 Nr. 1 BayEUG“, „§ 20 Abs. 1 BaySchO“, „§ 22 GSO“. Im Text steht die Satznummer als Ziffer unmittelbar vor dem Satz („1Zur Sicherung … 2Dazu zählt …“), Absätze stehen als „(1)“, „(2)“.",
+      "4. Du darfst kurz wörtlich zitieren, aber nur aus gelesenem Text, in Anführungszeichen und mit Fundstelle. Alles andere gibst du sinngemäß wieder.",
+      "5. Findest du keine einschlägige Regelung, sage das offen und behaupte keine. Nenne nie eine Fundstelle, die du nicht gelesen hast.",
+      "6. Beachte den Rang: Unionsrecht (DSGVO) und Grundgesetz, dann Bundesgesetze (BeamtStG, KunstUrhG), dann Landesgesetze (BayEUG, BayDSG, BayBG, BayDG), dann Schulordnungen und Verordnungen (BaySchO, GSO, UrlMV), dann Verwaltungsvorschriften (LDO), zuletzt die Hausordnung. Beachte bei Verweisen die in der Norm genannten Absätze und Ausnahmen. Weise auf Fristen und Zuständigkeiten (Lehrkraft, Klassenleitung, Schulleitung, Lehrerkonferenz) hin, soweit der Text sie nennt.",
+      "7. Bei Ordnungsmaßnahmen, Noten, Vorrücken, Prüfungen, Datenschutz und Fristen lies die Norm vollständig, bevor du antwortest.",
+      "",
+      "ANTWORTSTRUKTUR (immer mit Bezug auf den geschilderten Fall)",
+      "**Kurzeinschätzung:** ein bis zwei Sätze dazu, was gilt oder zulässig ist.",
+      "**Rechtsgrundlage:** die einschlägigen Fundstellen mit dem wesentlichen Inhalt.",
+      "**Anwendung auf Ihren Fall:** knappe Bewertung des Sachverhalts anhand der Rechtsgrundlage.",
+      "**Nächste Schritte:** konkrete Handlungsschritte in sinnvoller Reihenfolge, mit Zuständigkeiten, Fristen, Information der Erziehungsberechtigten und Dokumentation, soweit einschlägig.",
+      "",
+      "WENN KEINE EINDEUTIGE LÖSUNG MÖGLICH IST",
+      "Das ist der Fall bei Ermessensfragen mit offenem Ausgang, widersprüchlichen oder unklaren Vorschriften, fehlender einschlägiger Norm, Streit mit Erziehungsberechtigten, drohenden Rechtsmitteln oder Klagen, Disziplinar- oder Dienstrechtsfragen zur eigenen Person der Lehrkraft, Verdacht auf eine Straftat sowie Hinweisen auf eine Kindeswohlgefährdung. Sage dann offen, dass sich der Fall nicht eindeutig lösen lässt, nenne zuvor, was sich bereits klären lässt, und schließe mit dem Satz: „Dazu empfehle ich Ihnen ein Gespräch mit dem Schulleiter, Herrn Matthias Zeidler.“ Bei akuter Gefahr für eine Person weise zuerst auf sofortige Information der Schulleitung und, wenn nötig, den Notruf hin.",
+      "",
+      "GRENZEN",
+      "• Deine Einschätzung ist eine Orientierung und keine verbindliche Rechtsauskunft. Verbindliche Entscheidungen trifft die zuständige Stelle.",
+      "• Fragen außerhalb des bayerischen Schulrechts und des Dienstrechts der Lehrkräfte (andere Bundesländer, Schulpädagogik, Privatrecht) beantwortest du nicht, sondern sagst kurz, dass sie außerhalb deines Bereichs liegen.",
+      "• Werden Namen von Schülerinnen, Schülern oder Eltern genannt, verwende sie nicht und bitte darum, künftig darauf zu verzichten.",
+      "• Schreibe auf Deutsch, in der Regel unter 350 Wörtern. Nutze Listen für die nächsten Schritte, sonst Fließtext.",
+      "",
+      "Heutiges Datum: " + today + "."
+    ].join("\n");
+  }
+
+  /* Werkzeuge, die Claude während der Antwort aufruft */
+  var consulted = [];
+  var statusEl = null;
+  function setStatus(t) { if (statusEl) statusEl.textContent = t; }
+  function makeTools() {
+    return [
+      {
+        name: "suche_normen",
+        description: "Durchsucht die Volltexte der Gesetze nach Stichwörtern und liefert bis zu 8 Treffer mit Gesetz, Fundstelle, Titel und Textausschnitt, beste zuerst. Gib 2 bis 6 Stichwörter samt Synonymen an, keine ganzen Sätze. Die Suche findet Wortteile („Ordnung“ findet „Ordnungsmaßnahmen“), aber keine Synonyme. Das Gesetz nutzt eigene Begriffe: Handy heißt „digitale Endgeräte“, Täuschung heißt „Unterschleif“.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            anfrage: { type: "string", description: "Stichwörter, durch Leerzeichen getrennt, zum Beispiel: Verweis Ordnungsmaßnahme Erziehungsberechtigte" },
+            gesetz: { type: "string", description: "Optional: Suche auf ein Gesetz beschränken", enum: LAWIDS }
+          },
+          required: ["anfrage"]
+        },
+        execute: function (inp) {
+          var q = String(inp.anfrage || "");
+          var law = resolveLaw(inp.gesetz);
+          setStatus("Suche in den Gesetzen: " + q + (law ? " (" + law + ")" : ""));
+          return searchNorms(q, law, 8);
+        }
+      },
+      {
+        name: "norm_lesen",
+        description: "Liefert den Wortlaut einer Norm (Artikel, Paragraph oder Anlage) samt Überschrift, Gliederung und Rechtsstand. Sätze sind durch vorangestellte Ziffern nummeriert, Absätze durch (1), (2). Lange Normen werden in Abschnitten von 20000 Zeichen geliefert, mit dem Parameter ab weiterlesen.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            gesetz: { type: "string", enum: LAWIDS, description: "Kürzel des Gesetzes" },
+            fundstelle: { type: "string", description: "Nummer der Norm, zum Beispiel „86“, „113b“, „Anlage 1“, bei der DSGVO auch „ErwG 47“ (Erwägungsgrund), bei der Hausordnung „5.1“ oder „Präambel“. Art. oder § sind nicht nötig." },
+            ab: { type: "integer", description: "Optional: Zeichenposition, ab der weitergelesen wird" }
+          },
+          required: ["gesetz", "fundstelle"]
+        },
+        execute: function (inp) {
+          var law = resolveLaw(inp.gesetz);
+          if (!law) throw new Error("Bitte das Gesetz angeben.");
+          var r = readNorm(law, inp.fundstelle, inp.ab);
+          var tag = r.fundstelle + " " + law;
+          if (consulted.indexOf(tag) < 0) consulted.push(tag);
+          setStatus("Lese " + tag + " …");
+          return r;
+        }
+      }
+    ];
+  }
+  function fallbackContext(q) {
+    var hits = searchNorms(q, null, 6), parts = [];
+    hits.forEach(function (h) {
+      var r = readNorm(h.gesetz, h.fundstelle, 0);
+      parts.push("### " + r.fundstelle + " " + r.gesetz + " " + r.titel + "\n" + r.text.slice(0, 4000));
+    });
+    return parts.join("\n\n");
+  }
+
+  var thread = document.getElementById("thread");
+  var intro = document.getElementById("intro");
+  var form = document.getElementById("form");
+  var input = document.getElementById("input");
+  var sendBtn = document.getElementById("send");
+  var history = [];
+  var busy = false;
+  var controller = null;
+  var sample = null;
+  var toolsOK = null;
+
+  /* Text rendering: escape first, then add a small subset of Markdown. */
+  var CITE = /(?:(?:§§?|Art\.)\s?\d+[a-z]?(?:\s?(?:Abs\.|Satz|Nr\.|Halbsatz|UAbs\.)\s?\d+[a-z]?|\s?Buchst\.\s?[a-z]\b)*\s?(?:BayEUG|BaySchO|GSO|BayBG|BayDG|UrlMV|GG|KunstUrhG|BayDSG|DSGVO|LDO|BeamtStG)\b|Nr\.\s?\d+(?:\.\d+)?\s?Hausordnung\b|ErwG\s?\d+\s?DSGVO\b)/g;
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function inline(s) {
+    s = esc(s);
+    s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*(?!\s)([^*]+?)\*/g, "<em>$1</em>");
+    s = s.replace(CITE, '<span class="cite">$&</span>');
+    return s;
+  }
+  function md(src) {
+    var lines = src.split("\n"), html = "", list = null, para = [], m;
+    function flushP() { if (para.length) { html += "<p>" + inline(para.join(" ")) + "</p>"; para = []; } }
+    function flushL() { if (list) { html += "</" + list + ">"; list = null; } }
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].replace(/\s+$/, "");
+      if (!line.trim()) { flushP(); flushL(); continue; }
+      if ((m = line.match(/^#{1,4}\s+(.*)/))) { flushP(); flushL(); html += "<h4>" + inline(m[1]) + "</h4>"; continue; }
+      if ((m = line.match(/^\s*[-*•]\s+(.*)/))) {
+        flushP(); if (list !== "ul") { flushL(); html += "<ul>"; list = "ul"; }
+        html += "<li>" + inline(m[1]) + "</li>"; continue;
+      }
+      if ((m = line.match(/^\s*\d+[.)]\s+(.*)/))) {
+        flushP(); if (list !== "ol") { flushL(); html += "<ol>"; list = "ol"; }
+        html += "<li>" + inline(m[1]) + "</li>"; continue;
+      }
+      flushL(); para.push(line.trim());
+    }
+    flushP(); flushL();
+    return html;
+  }
+
+  function nearBottom() { return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 140; }
+  function scrollDown() { window.scrollTo(0, document.documentElement.scrollHeight); }
+
+  function addUser(text) {
+    var el = document.createElement("div");
+    el.className = "msg user";
+    var who = document.createElement("div"); who.className = "who"; who.textContent = "Fall";
+    var body = document.createElement("div"); body.className = "body"; body.textContent = text;
+    el.appendChild(who); el.appendChild(body);
+    thread.appendChild(el);
+  }
+  function addBot() {
+    var el = document.createElement("div");
+    el.className = "msg bot";
+    var who = document.createElement("div"); who.className = "who"; who.textContent = "Einschätzung";
+    var body = document.createElement("div"); body.className = "body";
+    body.innerHTML = '<span class="typing">Vorschriften werden geprüft …</span>';
+    var status = document.createElement("div"); status.className = "status";
+    el.appendChild(who); el.appendChild(body); el.appendChild(status);
+    thread.appendChild(el);
+    return { el: el, body: body, status: status };
+  }
+  function addConsulted(bot) {
+    if (!consulted.length) return;
+    var box = document.createElement("div"); box.className = "consulted";
+    box.appendChild(document.createTextNode("Nachgeschlagen:"));
+    consulted.forEach(function (t) {
+      var s = document.createElement("span"); s.className = "cite"; s.textContent = t; box.appendChild(s);
+    });
+    bot.el.appendChild(box);
+  }
+  function addActions(bot, text) {
+    var box = document.createElement("div"); box.className = "msg-actions";
+    var b = document.createElement("button"); b.type = "button"; b.textContent = "Einschätzung kopieren";
+    b.addEventListener("click", function () {
+      try {
+        navigator.clipboard.writeText(text).then(function () { b.textContent = "Kopiert"; }, function () { b.textContent = "Kopieren nicht möglich"; });
+      } catch (e) { b.textContent = "Kopieren nicht möglich"; }
+    });
+    box.appendChild(b); bot.el.appendChild(box);
+  }
+  function showError(bot, msg) {
+    var d = document.createElement("div"); d.className = "err"; d.textContent = msg;
+    bot.el.appendChild(d);
+  }
+
+  function setBusy(v) {
+    busy = v;
+    sendBtn.textContent = v ? "Stopp" : "Senden";
+    sendBtn.classList.toggle("stop", v);
+  }
+
+  function buildInput(extra) {
+    var turns = history.slice(-12);
+    while (turns.length && turns[0].role !== "user") turns.shift();
+    var out = turns.map(function (t) { return { role: t.role, content: t.content }; });
+    var last = out.length - 1;
+    if (extra) out[last].content += "\n\nAUSZUG AUS DEN GESETZEN (automatisch gefunden, ohne Gewähr auf Vollständigkeit):\n" + extra;
+    out[0] = { role: "user", content: instructions() + "\n\n---\nFallschilderung der Lehrkraft:\n" + out[0].content };
+    return out;
+  }
+
+  async function getSample() {
+    if (sample) return sample;
+    try { sample = (window.claude && window.claude.use) ? await window.claude.use("sample") : null; } catch (e) { sample = null; }
+    if (sample && toolsOK === null) {
+      try { var lim = await sample.limits(); toolsOK = !!(lim && lim.tools); } catch (e) { toolsOK = false; }
+    }
+    return sample;
+  }
+
+  async function ask(question) {
+    if (intro) { intro.remove(); intro = null; }
+    addUser(question);
+    history.push({ role: "user", content: question });
+    var bot = addBot();
+    statusEl = bot.status;
+    consulted = [];
+    scrollDown();
+    setBusy(true);
+
+    var corpus = await corpusReady;
+    if (!corpus) {
+      bot.body.textContent = "";
+      bot.status.textContent = "";
+      showError(bot, "Die Gesetzestexte konnten nicht geladen werden. Ohne sie antwortet der Assistent nicht. Bitte die Seite neu laden.");
+      history.pop(); setBusy(false); return;
+    }
+    var s = await getSample();
+    if (!s) {
+      bot.body.textContent = "";
+      bot.status.textContent = "";
+      showError(bot, "In dieser Ansicht kann der Assistent keine Antwort erzeugen. Bitte die Seite direkt in Claude öffnen.");
+      history.pop(); setBusy(false); return;
+    }
+
+    controller = new AbortController();
+    var latest = "";
+    var opts = {
+      signal: controller.signal,
+      modelTier: "default",
+      onText: function (e) {
+        latest = e.text;
+        if (!latest) return;
+        var stick = nearBottom();
+        bot.body.innerHTML = md(latest);
+        if (stick) scrollDown();
+      }
+    };
+    var extra = "";
+    if (toolsOK) { opts.tools = makeTools(); opts.cache = false; }
+    else { opts.cache = false; try { extra = fallbackContext(question); } catch (e) { extra = ""; } }
+    setStatus(toolsOK ? "Gesetzestexte werden durchsucht …" : "");
+
+    try {
+      var res = await s(buildInput(extra), opts);
+      latest = (res && res.text) || latest;
+      bot.body.innerHTML = md(latest);
+      history.push({ role: "assistant", content: latest });
+      bot.status.remove();
+      addConsulted(bot);
+      addActions(bot, latest);
+      if (res && res.truncated) showError(bot, "Die Antwort wurde gekürzt. Bitte nach einzelnen Punkten gezielt nachfragen.");
+    } catch (err) {
+      var partial = (err && err.text) || latest;
+      if (partial) { bot.body.innerHTML = md(partial); history.push({ role: "assistant", content: partial }); }
+      else { bot.body.textContent = ""; history.pop(); }
+      bot.status.remove();
+      var code = err && err.code;
+      if (code === "cancelled") {
+        showError(bot, "Antwort abgebrochen.");
+      } else if (code === "not_granted") {
+        showError(bot, "Die Freigabe für Claude wurde nicht erteilt. Ohne sie kann keine Einschätzung erzeugt werden.");
+      } else if (code === "rate_limited") {
+        showError(bot, "Gerade zu viele Anfragen. Bitte in einer Minute noch einmal versuchen.");
+      } else if (code === "prompt_too_large") {
+        showError(bot, "Die Unterhaltung ist zu lang geworden. Bitte mit „Neuer Fall“ neu beginnen.");
+      } else {
+        showError(bot, "Die Einschätzung konnte nicht erzeugt werden. Bitte die Schilderung erneut senden.");
+      }
+    } finally {
+      controller = null;
+      statusEl = null;
+      setBusy(false);
+      scrollDown();
+    }
+  }
+
+  function autosize() {
+    input.style.height = "auto";
+    input.style.height = Math.min(input.scrollHeight, 180) + "px";
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (busy) { if (controller) controller.abort(); return; }
+    var q = input.value.trim();
+    if (!q) return;
+    input.value = ""; autosize();
+    ask(q);
+  });
+  input.addEventListener("input", autosize);
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); }
+  });
+
+  document.getElementById("reset").addEventListener("click", function () {
+    if (controller) controller.abort();
+    history = [];
+    window.location.reload();
+  });
+
+  var exBox = document.getElementById("examples");
+  EXAMPLES.forEach(function (q) {
+    var b = document.createElement("button");
+    b.type = "button"; b.textContent = q;
+    b.addEventListener("click", function () { if (!busy) ask(q); });
+    exBox.appendChild(b);
+  });
+
+  getSample();
+})();
+</script>
